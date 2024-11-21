@@ -35,5 +35,6 @@ public class oAuthTest {
                 .asString();
 
         System.out.println("API Response: " + response);
+        System.out.println("Test");
     }
 }
