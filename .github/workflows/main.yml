@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17' # Mets ici la version que tu utilises
+          distribution: 'temurin' # Choix parmi: 'temurin', 'zulu', 'adopt', etc.
 
       # Étape 3 : Installer les dépendances Maven
       - name: Install dependencies
