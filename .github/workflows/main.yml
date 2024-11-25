@@ -4,7 +4,7 @@ name: Maven CI with Cucumber
 on:
   push:
     branches:
-      - main # Change "main" si ta branche principale a un autre nom
+      - main 
 
 # Définition des jobs
 jobs:
@@ -12,28 +12,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Étape 1 : Récupérer le code
+      # Étape 1 : Récupération du code source
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Étape 2 : Configurer Java (JDK)
+      # Étape 2 : Configuration de Java (JDK)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17' # Mets ici la version que tu utilises
-          distribution: 'temurin' # Choix parmi: 'temurin', 'zulu', 'adopt', etc.
+          java-version: '17' # Version de Java utilisée
+          distribution: 'temurin' # Distribution de JDK
 
-      # Étape 3 : Installer les dépendances Maven
+      # Étape 3 : Installation des dépendances Maven
       - name: Install dependencies
         run: mvn clean install
 
-      # Étape 4 : Exécuter les tests Cucumber
-      - name: Run Cucumber tests
-        run: mvn test
+      # Étape 4 : Exécution des tests Cucumber
+      - name: Run Cucumber tests  
+        run: mvn test verify
 
-      # Étape 5 : Générer un rapport (optionnel)
-      - name: Archive Cucumber report
-        uses: actions/upload-artifact@v3
+      # Étape 5 : Archivage des rapports Cucumber
+      # Upload des rapports dans différents formats pour s'assurer de capturer tous les résultats
+      - name: Archive Cucumber reports
+        uses: actions/upload-artifact@v4
         with:
-          name: cucumber-report
-          path: target/jsonReports/cucumber-report.json
+          name: cucumber-reports
+          path: |
+            target/jsonReports/
+            target/cucumber-reports/
+            target/surefire-reports/
+            
+      # Étape 6 : Téléchargement des rapports pour vérification
+      # Cette étape permet de vérifier que les artifacts sont correctement créés
+      - name: Download Cucumber reports
+        uses: actions/download-artifact@v4
+        with:
+          name: cucumber-reports
+          path: downloaded-reports
+          
+      # Étape 7 : Affichage du contenu des rapports téléchargés
+      # Cette étape permet de vérifier dans les logs quels fichiers ont été générés
+      - name: List downloaded files
+        run: ls -R downloaded-reports
