@@ -1,0 +1,39 @@
+name: Maven CI with Cucumber
+
+# Déclenche le workflow sur chaque push
+on:
+  push:
+    branches:
+      - main # Change "main" si ta branche principale a un autre nom
+
+# Définition des jobs
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Récupérer le code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Étape 2 : Configurer Java (JDK)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17' # Mets ici la version que tu utilises
+          distribution: 'temurin' # Choix parmi: 'temurin', 'zulu', 'adopt', etc.
+
+      # Étape 3 : Installer les dépendances Maven
+      - name: Install dependencies
+        run: mvn clean install
+
+      # Étape 4 : Exécuter les tests Cucumber
+      - name: Run Cucumber tests
+        run: mvn test
+
+      # Étape 5 : Générer un rapport (optionnel)
+      - name: Archive Cucumber report
+        uses: actions/upload-artifact@v3
+        with:
+          name: cucumber-report
+          path: target/jsonReports/cucumber-report.json
