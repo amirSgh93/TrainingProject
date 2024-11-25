@@ -29,7 +29,7 @@ jobs:
 
       # Étape 4 : Exécution des tests Cucumber
       - name: Run Cucumber tests  
-        run: mvn test
+        run: mvn test verify
 
       # Étape 5 : Archivage des rapports Cucumber
       # Upload des rapports dans différents formats pour s'assurer de capturer tous les résultats
